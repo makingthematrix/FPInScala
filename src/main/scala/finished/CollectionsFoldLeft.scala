@@ -1,5 +1,4 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
 
 // 2.2
 

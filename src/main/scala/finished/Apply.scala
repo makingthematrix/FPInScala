@@ -1,6 +1,7 @@
 package org.fpinscala.finished
 
-import Color.*
+import org.fpinscala.Color
+import org.fpinscala.Color.*
 
 object Apply {
   case class Cat /*private*/ (name: String, color: Color,age: Int)

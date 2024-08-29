@@ -1,5 +1,6 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
+
+import org.fpinscala.{UserData, UserService}
 
 import scala.io.StdIn.readLine
 

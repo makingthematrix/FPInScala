@@ -2,6 +2,7 @@ package org.fpinscala.finished
 
 import cats.effect.{IO, IOApp}
 import cats.syntax.all.*
+import org.fpinscala.UserData
 
 import java.nio.file.{Files, Path}
 import scala.jdk.CollectionConverters.*

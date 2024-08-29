@@ -1,12 +1,12 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
 
+import org.fpinscala.{CarBrand, Color}
+import Color.*
+import CarBrand.*
 // 2.1
 
 object CollectionsFlatMap {
   case class Cat(name: String, color: Color)
-
-  import Color.*
 
   val felix = Cat("Felix", Black)
   val shadow = Cat("Shadow", Black)
@@ -18,7 +18,6 @@ object CollectionsFlatMap {
 
   case class Car(brand: CarBrand, color: Color)
 
-  import CarBrand.*
   // We define a function that takes a cat and produces a list of cars
   def catToCars(cat: Cat): Seq[Car] =
     Seq(

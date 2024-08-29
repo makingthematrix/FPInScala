@@ -1,14 +1,13 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
 
 // 4
 
+import org.fpinscala.Color
+import Color.*
 import scala.util.Random
 
 object FunctionsReturningFunctions {
   case class Cat(name: String, color: Color)
-
-  import Color.*
 
   val colors = Color.values.toSeq
   val catNames = Seq("Fluff", "Shadow", "Garfield")

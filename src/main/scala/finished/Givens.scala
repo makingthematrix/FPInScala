@@ -1,6 +1,6 @@
 package org.fpinscala.finished
 
-object TreeGivens {
+object Givens {
   enum Tree[+T] { 
     case Branch(left: Tree[T], value: T, right: Tree[T])
     case Leaf(value: T)

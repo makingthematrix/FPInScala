@@ -1,5 +1,4 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
 
 object ViewAndLazyList {
   private val numbers: Seq[Int] = 1 to 100

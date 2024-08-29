@@ -1,6 +1,6 @@
-package org.fpinscala
-package finished
+package org.fpinscala.finished
 
+import org.fpinscala.UserData
 import java.nio.file.{Files, Path}
 import scala.io.StdIn.readLine
 import scala.jdk.CollectionConverters.*

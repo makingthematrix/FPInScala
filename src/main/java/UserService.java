@@ -1,4 +1,4 @@
-package org.makingthematrix.fpinscala;
+package org.fpinscala;
 
 import java.util.Collection;
 

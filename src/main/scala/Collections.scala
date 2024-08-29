@@ -1,4 +1,4 @@
-package org.makingthematrix.fpinscala
+package org.fpinscala
 
 object Collections {
   import Color.*
@@ -10,36 +10,31 @@ object Collections {
   val fluff = Cat("Fluff", White)
   
   // Scala collections: Seq, Set, Map
-  val catsSeq = Seq(fluff, garfield, felix)
-  val sortedCats1 = catsSeq.sortWith( (c1, c2) => ??? )
+  val catsSeq = ???
+  val sortedCats1 = ???
 
   // This won't work because cats don't have an implicit ordering
   //val sortedCats2 = catsSeq.sorted
 
-  // But this will
-  val sortedCats3 = catsSeq.sortBy(_.color.toString)
+  val sortedCats3 = ???
 
   // maps
-  val catsMap = Map(
-    "Felix"    -> felix,
-    "Garfield" -> garfield,
-    "Fluff"    -> fluff
-  )
+  val catsMap = ???
 
   // tuples
-  val catsTuples: Seq[(String, Cat)] = catsMap.toSeq
+  val catsTuples = ???
 
   // filter - we already discussed it
 
   // find
-  val blackCat: Option[Cat] = catsSeq.find { cat => cat.color == Black }
-  val felixTheCat: Option[Cat] = catsSeq.find { cat => cat.name == "Felix" } // also: _.name == "Felix"
+  val blackCat = ???
+  val felixTheCat = ???
 
   // foreach
-  catsSeq.foreach(cat => println(s"This is ${cat.name}"))
+
 
   // map
   // Let's create another class
   case class Car(color: Color)
-  val cars = catsSeq.map(cat => Car(cat.color)).toSeq
+  val cars = ???
 }

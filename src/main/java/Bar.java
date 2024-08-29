@@ -1,3 +1,3 @@
-package org.makingthematrix.fpinscala;
+package org.fpinscala;
 
 public class Bar { }

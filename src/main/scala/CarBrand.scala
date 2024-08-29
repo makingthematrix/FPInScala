@@ -1,4 +1,4 @@
-package org.makingthematrix.fpinscala
+package org.fpinscala
 
 enum CarBrand {
   case Volkswagen, Mercedes, Toyota

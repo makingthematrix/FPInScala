@@ -1,7 +1,7 @@
-package org.makingthematrix.fpinscala
+package org.fpinscala
 
-import scala.jdk.CollectionConverters.*
 import java.nio.file.{Path, Paths}
+import scala.jdk.CollectionConverters.*
 
 type UserId = Int
 type Email = String

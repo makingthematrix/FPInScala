@@ -15,184 +15,225 @@ Ctrl + Shift + Enter -> Complete current statement
 
 Option + Shift + Space -> Type-Matching
 
+Option + Shift + Backspace -> Line completion
+
 1. What is a function
 2. Anonymous functions
 3. Passing functions as arguments
 4. Case class
 
+#### Functions as data (1)
+
 ```scala
-object FunctionAsData {
-  class Cat(val color: Color)
+object FunctionsAsData {
+   class User(val name: String, val email: String) {
+    override def toString: String = s"$name:$email"
+  }
 
-  // We create our bag (a set) of cats. Each cat has a different color.
-  // Note the highlighting and suggestions
-  val bagOfCats = Set(Cat(Color.White), Cat(Color.Ginger), Cat(Color.Black))
+  // Let's create a sequence of three users
+  val users: Seq[User] = Seq(
+    User("Joe", "joe@gmail.com"),
+    User("Felix", "felix@proton.me"),
+    User("Garfield", "garfield@catmail.org")
+  )
+  
+  // A function which checks if the user's email is valid
+  def isEmailValid(user: User): Boolean = user.email.contains('@')
 
-  // A function which checks if a cat is white go ginger, the `def` syntax
-  def isCatWhiteOrGinger(cat: Cat): Boolean = cat.color == Color.White || cat.color == Color.Ginger
+  // Pass the appropriate function into `filter` to create a sequence of users with valid emails.
+  private val usersWithValidEmails = users.filter(isEmailValid)
 
-  // Pass the appropriate function into `filter` to create a bag of white cats.
-  val bagOfWhiteOrGingerCats = bagOfCats.filter(isCatWhiteOrGinger)
-
-  // The whole "Cat => Boolean" is the type of the function
-
-  val isCatWhiteOrGingerFun: Cat => Boolean =
-    cat => cat.color == Color.White || cat.color == Color.Ginger
+  // The whole "User => Boolean" is the type of the function
+  private val isEmailValidFun: User => Boolean =
+    user => user.email.contains('@')
 
   // We can use it instead of the method version in `filter`
-  val bagOfWhiteOrGingerCatsFun = bagOfCats.filter(isCatWhiteOrGingerFun)
+  val usersWithValidEmailsFun: Seq[User] = users.filter(isEmailValidFun)
 
   // or we can use an anonymous function - also called lambdas
-  val bagOfWhiteOrGingerCatsAnon = bagOfCats.filter(cat => cat.color == Color.White || cat.color == Color.Ginger)
+  val usersWithValidEmailsAnon: Seq[User] = users.filter(user => user.email.contains('@'))
 
   // Lambdas, just as all functions, can take a value from its scope
-  private val color = Color.White
-  val numberOfColorCats = bagOfCats.filter(_.color == color)
-}
-```
-
-
-
-Scala collections: filter, find, foreach, map, flatMap
-
-```scala
-object Collections {
-  import Color.*
-
-  case class Cat(name: String, color: Color)
-
-  val felix = Cat("Felix", Black)
-  val garfield = Cat("Garfield", Ginger)
-  val fluff = Cat("Fluff", White)
-  
-  // Scala collections: Seq, Set, Map
-  val catsSeq = Seq(fluff, garfield, felix)
-  val sortedCats1 = catsSeq.sortWith( (c1, c2) => ??? )
-
-  // This won't work because cats don't have an implicit ordering
-  //val sortedCats2 = catsSeq.sorted
-
-  // But this will
-  val sortedCats3 = catsSeq.sortBy(_.color.toString)
-
-  // maps
-  val catsMap = Map(
-    "Felix"    -> felix,
-    "Garfield" -> garfield,
-    "Fluff"    -> fluff
-  )
-
-  // tuples
-  val catsTuples: Seq[(String, Cat)] = catsMap.toSeq
-
-  // filter - we already discussed it
-
-  // find
-  val blackCat: Option[Cat] = catsSeq.find { cat => cat.color == Black }
-  val felixTheCat: Option[Cat] = catsSeq.find { cat => cat.name == "Felix" } // also: _.name == "Felix"
-
-  // foreach
-  catsSeq.foreach(cat => println(s"This is ${cat.name}"))
-
-  // map
-  // Let's create another class
-  case class Car(color: Color)
-  val cars = catsSeq.map(cat => Car(cat.color)).toSeq
-}
-```
-
-FlatMap
-
-```scala
-object CollectionsFlatMap {
-  case class Cat(name: String, color: Color)
-
-  import Color.*
-
-  val felix = Cat("Felix", Black)
-  val shadow = Cat("Shadow", Black)
-  val snowball = Cat("Snowball", White)
-  val garfield = Cat("Garfield", Ginger)
-
-  // We put them all in a list
-  val cats = Seq(felix, shadow, snowball, garfield)
-
-  case class Car(brand: CarBrand, color: Color)
-
-  import CarBrand.*
-  // We define a function that takes a cat and produces a list of cars
-  def catToCars(cat: Cat): Seq[Car] =
-    Seq(
-      Car(Volkswagen, cat.color),
-      Car(Mercedes, cat.color),
-      Car(Toyota, cat.color)
+  private val alwaysValidName = "Maciek"
+  val usersWithValidEmailsOrMaciek: Seq[User] =
+    users.filter(
+      user => user.name == alwaysValidName || isEmailValid(user)
     )
 
-  val cars = cats.flatMap(catToCars)
-
 /*  @main def main(): Unit = {
-    println(s"Number of cars: ${cars.size}")
-    cars.foreach(car => println(s"${car.color} ${car.brand}"))
+    println(usersWithValidEmails)
   }*/
 }
 ```
 
 
 
-X-Ray
-
-
-
-Total and partial functions (and traits)
+#### Scala collections: filter, find, foreach, map (2)
 
 ```scala
-object PartialFunctions {
-  enum Color {
-    case Black, White, Ginger
-  }
+object Collections {
+  case class User(name: String, email: String)
+
+  val joe = User("Joe", "joe@gmail.com")
+  val felix = User("Felix", "felix@proton.me")
+  val garfield = User("Garfield", "garfield@catmail.org")
   
-  import Color.*
+  // Scala collections: Seq, Set, Map
+  val usersSeq = Seq(joe, garfield, felix)
+  val sortedUsers = usersSeq.sortWith( (u1, u2) => u1.name < u2.name )
 
-  // traits!
-  trait Animal {
-    def name: String
-    def color: Color
-  }
+  // This won't work because users don't have an implicit ordering
+  //val sortedUsers2 = usersSeq.sorted
+
+  // But this will
+  val sortedUsers3 = usersSeq.sortBy(_.name)
+
+  // maps
+  val usersMap = Map(
+    "Felix" -> felix,
+    "Garfield" -> garfield,
+    "Joe" -> joe
+  )
   
-  case class Cat(name: String, color: Color) extends Animal
-  case class Dog(name: String, color: Color) extends Animal
+  // a map can be thought of as a set of tuples 
+  val usersMap2 = usersSeq.map(u => u.name -> u).toMap
 
-  // We create three instances of cats
-  val felix = Cat("Felix", Black)
-  val garfield = Cat("Garfield", Ginger)
-  val shadow = Cat("Shadow", Black)
+  // tuples
+  val userTuples: Seq[(String, User)] = usersMap.toSeq
 
-  // and two instances of dogs
-  val fido = Dog("Fido", Black)
-  val snowy = Dog("Snowy", White)
+  // filter - we already discussed it
 
-  // We put all cats and dogs in a sequence of type Seq[Animal]
-  val animals: Seq[Animal] = Seq(felix, garfield, shadow, fido, snowy)
+  // find
+  val protonEmail: Option[User] = usersSeq.find { user => user.email.endsWith("@proton.me") }
+  val felixTheUser: Option[User] = usersSeq.find { joe => joe.name == "Felix" } // also: _.name == "Felix"
 
-  // Using the collect method, we create a new sequence containing only black cats
-  val blackCats: Seq[Cat] = animals.collect {
-    case cat: Cat if cat.color == Black => cat
-  }
- 
+  // foreach
+  usersSeq.foreach(user => println(s"This is ${user.name}"))
+
+  // map
+  // Let's create a conversation class
+  case class Conversation(title: String, participants: Seq[User])
+  // And let's create conversations of Joe and every other user
+  val joesConvos: Seq[Conversation] =
+    usersSeq
+      .filterNot(_.name == "Joe")
+      .map(user => Conversation(s"Joe and ${user.name}", Seq(joe, user)))
 }
 ```
 
 
 
-Functions returning functions
+#### Collections FlatMap (3)
+
+```scala
+object CollectionsFlatMap {
+  // Let's take that map for Joe and use it for every user
+  case class User(name: String, email: String)
+  case class Conversation(title: String, participants: Seq[User])
+
+  val joe: User = User("Joe", "joe@gmail.com")
+  val felix: User = User("Felix", "felix@proton.me")
+  val garfield: User = User("Garfield", "garfield@catmail.org")
+  val users: Seq[User] = Seq(joe, garfield, felix)
+  
+  val convos: Seq[Conversation] =
+    users.flatMap { user =>
+      users
+        .filterNot(_.name == user.name)
+        .map(user2 => Conversation(s"${user.name} and ${user2.name}", Seq(user, user2)))
+    }
+/*
+  @main def main(): Unit = {
+    println(s"Number of convos: ${convos.size}")
+    convos.foreach(c => println(c.title))
+  }*/
+}
+```
+
+
+
+#### Collections FoldLeft (4)
+
+```scala
+  // fizz buzz! union types!
+  def fizzBuzz(n: Int): Int | String = n match {
+    case _ if n % 15 == 0 => "FizzBuzz"
+    case _ if n % 3 == 0  => "Fizz"
+    case _ if n % 5 == 0  => "Buzz"
+    case _ => n
+  }
+
+  // Generate a range of numbers from 1 to 100
+  val numbers = 1 to 100
+
+  // Use foldLeft to iterate through the numbers and apply the fizzBuzz function
+  val fizzBuzzList =
+    numbers.foldLeft[List[Int | String]](Nil) {
+      (acc, n) => acc.appended(fizzBuzz(n))
+    }
+
+/*  @main def main(): Unit = {
+    println(fizzBuzzList)
+  }*/
+```
+
+
+
+#### Collections X-Ray (5)
+
+Scala supports <b>implicit conversions</b> and <b>implicit parameters</b>, which can significantly reduce boilerplate code - but it might be challenging to understand where values come from or how types are converted. Implicit hints show information about implicit arguments and implicit conversions that the data in question will undergo during compilation. The X-Ray mode may prove to be particularly useful in this case, letting you see implicit hints only for a moment when you want to make sure what they are, and then they will disappear again.
+
+
+
+#### Partial Functions (6)
+
+
+
+```scala
+object PartialFunctions {
+   // Using the collect method, create a set of names of parents of our users
+
+  import org.fpinscala.UserData.parents
+  import org.fpinscala.UserData.database
+
+  val parentNames: Seq[String] =
+    database
+      .map(u => parents.get(u.id))
+      .collect {
+        case Some(id) if database.exists(_.id == id) => database(id).name
+      }
+
+  import org.fpinscala.Animal.animals
+  import org.fpinscala.Cat
+  import org.fpinscala.Color.Black
+
+  // Using the collect method, create a sequence of animals containing only black cats
+  val blackCats: Seq[Cat] = animals.collect {
+    case cat: Cat if cat.color == Black => cat
+  }
+
+  // We will come back to `collect` in the part about early returns
+}
+```
+
+
+
+#### Functions returning functions (7)
+
+  Currying is the process of converting a function with multiple arguments into a sequence
+  of functions that take one argument. Each function returns another function that consumes
+  the following argument.
+
+  Partial application is the process of reducing the number of arguments by applying some
+  of them when the method or function is created.
+
+  More: https://www.baeldung.com/scala/currying
 
 ```scala
 import scala.util.Random
 
 object FunctionsReturningFunctions {
   case class Cat(name: String, color: Color)
-
-  import Color.*
 
   val colors = Color.values.toSeq
   val catNames = Seq("Fluff", "Shadow", "Garfield")
@@ -210,10 +251,226 @@ object FunctionsReturningFunctions {
   val gen1 = catGenerator("Fluff")
   val gen2 = catGenerator(Black)
 
+  // partial application
+  def createBlackCat = Cat.apply(_, Color.Black)
+
+  def sum(x: Int, y: Int): Int = x + y
+  def sum2(x: Int)(y: Int): Int = x + y
+  val sum3: Int => Int => Int = { x => y => x + y }
+  val increment: Int => Int = sum2(1)(_)
+
 /*  @main def main(): Unit = {
-    println(gen1())
-    println(gen2())
+    //println(gen1())
+    //println(gen2())
+    //println(increment(3))
   }*/
+}
+```
+
+
+
+#### Early returns (8)
+
+```scala
+  import UserData.database
+
+  /**
+   * This is our "complex conversion" method.
+   * We assume that it is costly to retrieve user data, so we want to avoid
+   * calling it unless it's absolutely necessary.
+   *
+   * This version of the method assumes that the user data always exists for a given user id.
+   */
+  def complexConversion(userId: UserId): UserData =
+    database.find(_.id == userId).get
+
+  /**
+   * Similar to `complexConversion`, the validation of user data is costly
+   * and we shouldn't do it too often.
+   */
+  def complexValidation(user: UserData): Boolean =
+    !user.email.contains(' ') && user.email.count(_ == '@') == 1
+  
+  private val userIds: Seq[UserId] = 1 to 11
+
+/*  @main def main(): Unit = {
+    val user = Imperative.findFirstValidUser(userIds)
+    println(user)
+  }*/
+
+  /**
+   * Imperative approach that uses unidiomatic `return`.
+   */
+  object Imperative {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] = {
+      for (userId <- userIds) {
+        val userData = complexConversion(userId)
+        if (complexValidation(userData)) return Some(userData)
+      }
+      None
+    }
+  }
+
+  /**
+   * Naive functional approach: calls `complexConversion` twice on the selected ID.
+   */
+  object Naive {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds
+        .find(userId => complexValidation(complexConversion(userId)))
+        .map(complexConversion)
+  }
+
+  /**
+   * A more concise implementation, which uses `collectFirst`.
+   */
+  object CollectFirst {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds.collectFirst {
+        case userId if complexValidation(complexConversion(userId)) => complexConversion(userId)
+      }
+  }
+
+  /**
+   * The custom `unapply` method runs conversion and validation and only returns valid user data.
+   */
+  object CustomUnapply {
+    object ValidUser {
+      def unapply(userId: UserId): Option[UserData] =
+        val userData = complexConversion(userId)
+        if complexValidation(userData) then Some(userData) else None
+    }
+
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds.collectFirst {
+        case ValidUser(user) => user
+      }
+  }
+
+  /**
+   * This function takes into account that some IDs can be left out from the database
+   */
+  def safeComplexConversion(userId: UserId): Option[UserData] = database.find(_.id == userId)
+
+  /**
+   * Partiality of `safeComplexConversion` trickles into the search function.
+   */
+  object SafeImperative {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      for (userId <- userIds) {
+        safeComplexConversion(userId) match {
+          case Some(user) if complexValidation(user) => return Some(user)
+          case _ =>
+        }
+      }
+      None
+  }
+
+  /**
+   * This custom `unapply` method performs the safe conversion and then validation.
+   */
+  object SafeCollectFirst {
+    object ValidUser {
+      def unapply(userId: UserId): Option[UserData] =
+        safeComplexConversion(userId).find(complexValidation)
+    }
+
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds.collectFirst {
+        case ValidUser(user) => user
+      }
+  }
+
+  object MoreThanOneValidation {
+    object ValidUser {
+      def unapply(userId: UserId): Option[UserData] =
+        safeComplexConversion(userId).find(complexValidation)
+    }
+
+    object ValidUserInADifferentWay {
+      def otherValidation(userData: UserData): Boolean = false
+      def unapply(userId: UserId): Option[UserData] = safeComplexConversion(userId).find(otherValidation)
+    }
+
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds.collectFirst {
+        case ValidUser(user) => user
+        case ValidUserInADifferentWay(user) => user
+      }
+  }
+  
+  object Deconstruct {
+    trait Deconstruct[From, To] {
+      def convert(from: From): Option[To]
+      def validate(to: To): Boolean
+      def unapply(from: From): Option[To] = convert(from).find(validate)
+    }
+
+    object ValidUser extends Deconstruct[UserId, UserData] {
+      def convert(userId: UserId): Option[UserData] = safeComplexConversion(userId)
+      def validate(user: UserData): Boolean = complexValidation(user)
+    }
+
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds.collectFirst {
+        case ValidUser(user) => user
+      }
+  }
+  
+  object LazyCollection {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] =
+      userIds
+        .iterator
+        .map(safeComplexConversion)
+        .find(_.exists(complexValidation))
+        .flatten
+  }
+
+  import scala.util.boundary
+  import scala.util.boundary.break
+
+  object BreakingBoundary {
+    def findFirstValidUser(userIds: Seq[UserId]): Option[UserData] = {
+      boundary:
+        for (userId <- userIds)
+          safeComplexConversion(userId).foreach { userData =>
+            if (complexValidation(userData)) break(Some(userData))
+          }
+        None
+    }
+  }
+```
+
+
+
+#### Lazy collections (9)
+
+```scala
+object CollectionView {
+  private val numbers: Seq[Int] = 1 to 100
+
+  // Without using view
+  val firstEvenSquareGreaterThan100_NoView: Int = 
+    numbers
+      .map(n => n * n)
+      .filter(n => n > 100 && n % 2 == 0)
+      .head
+  
+  // Using view
+  val firstEvenSquareGreaterThan100_View: Int =
+    numbers
+      .view
+      .map(n => {
+        println(s"Square of $n being calculated.") // To observe the lazy evaluation
+        n * n
+      })
+      .filter(n => n > 100 && n % 2 == 0)
+      .head
+  
+  @main def main(): Unit = {
+    println(firstEvenSquareGreaterThan100_NoView)
+    println(firstEvenSquareGreaterThan100_View)
+  }
 }
 ```
 
@@ -223,19 +480,14 @@ object FunctionsReturningFunctions {
 
 Showcase the debugger, enum suggestions, enum imports, match/case exhaustive, the recursion icon, "the recursive call requires the return type", "cannot rewrite recursive call in tail position".
 
-1. Enums
-2. Traits hierarchies, case objects
-3. Unapply
-4. Recursion
-5. tailrec
-
-Follow with using/given in Part #7.
+#### Recursion (10)
 
 ```scala
 import scala.annotation.tailrec
+import scala.util.control.TailCalls.*
 
 object Recursion {
-  def factorial(n: BigInt): BigInt =
+  def factorial(n: Int): BigInt =
     if (n <= 0) 1
     else n * factorial(n - 1)
 
@@ -261,41 +513,68 @@ object Recursion {
     go(n, 1)
   }
 
+  def trampolineFactorial(n: Int): BigInt = {
+    def go(i: Int): TailRec[BigInt] =
+      if (i <= 0) done(1)
+      else tailcall(go(i - 1)).map(_ * i)
+
+    go(n).result
+  }
+
+  // 1 -> 1, 2 -> 1, 3 -> 2, 4 -> 3, 5 -> 5, 6 -> 8
+
   def fibonacci(n: Int): BigInt =
-    if (n == 0) 0
-    else if (n == 1) 1
+    if (n == 1) 1
+    else if (n == 2) 1
     else fibonacci(n - 2) + fibonacci(n - 1)
 
   def tailFibonacci(n: Int): BigInt = {
     @tailrec
     def go(currentN: Int, currentSum: BigInt, previousSum: BigInt): BigInt = {
-      if (currentN < 0) -1
-      else if (currentN == 0) previousSum
+      if (currentN < 1) 1
+      else if (currentN == 1) previousSum
       else go(currentN - 1, currentSum + previousSum, currentSum)
     }
 
     go(n, 1, 1)
   }
 
+  def trampolineFibonacci(n: Int): BigInt = {
+    def go(i: Int): TailRec[BigInt] = i match {
+      case 1 => done(1)
+      case 2 => done(1)
+      case _ =>
+        for {
+          a <- tailcall(go(i - 1))
+          b <- tailcall(go(i - 2))
+        } yield a + b
+    }
+
+    go(n).result
+  }
+
   private val fib: LazyList[BigInt] =
-    BigInt(0) #::
+    BigInt(1) #::
       BigInt(1) #::
       fib.zip(fib.tail).map { case (a, b) => a + b }
 
   def fibonacciLazyList(n: Int): BigInt = fib.take(n).last
 
-/*  @main def main(): Unit = {
+  @main def main(): Unit = {
     //val res = factorial(10000)
-    //val res = fibonacci(40)
-    val res = fibonacciLazyList(80)
+    //val res = tailFactorial(10000)
+    //val res = trampolineFactorial(10000)
+    //val res = fibonacci(10)
+    //val res = tailFibonacci(6)
+    val res = trampolineFibonacci(6)
+    //val res = fibonacciLazyList(6)
     println(res)
-  }*/
+  }
 }
 ```
 
 
-
-Tree Enum
+#### ADT, enums, trait hierarchies (11)
 
 ```scala
 object Enums {
@@ -321,8 +600,7 @@ object Enums {
       3,
       Branch(Leaf(4), 5, Leaf(6))
     )
-  
-  //@tailrec
+
   def print[T](tree: Tree[T], toString: T => String, level: Int = 0): Unit = {
     val prefix = Seq.fill(level)('-').mkString
     tree match { // show match exhaustive!
@@ -361,7 +639,7 @@ object Enums {
 
   def create[T](values: Seq[T], compare: (T, T) => Int): Tree[T] = add(Stump, values, compare)
 
-/*  @main def main(): Unit = {
+  /*@main*/ def main(): Unit = {
     //print(intTree, _.toString)
     val compare = (a: Int, b: Int) => a - b
     val newTree: Tree[Int] =
@@ -369,90 +647,160 @@ object Enums {
         .foldLeft[Tree[Int]](Stump) { (tree, t) => add(tree, t, compare) }
    // val newTree = create(Seq(10, 5, 15, 2, 8), compare)
     print(newTree, (n: Int) => n.toString)
-  }*/
+  }
 
 }
+
 
 ```
 
 
 
-Tree traits
+#### Tree traits
+
+```scala
+sealed trait Tree[+T]
+
+object Tree {
+  case class Branch[T](left: Tree[T], value: T, right: Tree[T]) extends Tree[T]
+  case class Leaf[T](value: T) extends Tree[T]
+  case object Stump extends Tree[Nothing]
+}
+```
+
+
+
+#### Monads (12)
+
+```scala
+  import UserData.{database, parents}
+
+  object WithExceptions {
+    def findParent(name: String): UserData = {
+      val user = UserService.findUser(name) // Java
+      val parentId = parents(user.id)
+      database.find(_.id == parentId).get
+    }
+  }
+
+  object WithOption {
+    def findParent(name: String): Option[UserData] =
+      database
+        .find(_.name == name)
+        .flatMap(user => parents.get(user.id))
+        .flatMap(parentId => database.find(_.id == parentId))
+
+    def findParent2(name: String): Option[UserData] =
+      for {
+        user     <- database.find(_.name == name)
+        parentId <- parents.get(user.id)
+        parent   <- database.find(_.id == parentId)
+      } yield parent
+  }
+
+  object WithEither {
+    def findParent(name: String): Either[String, UserData] =
+      database
+        .find(_.name == name).toRight(s"No user $name in the database")
+        .flatMap(user => parents.get(user.id).toRight(s"No parent found for user $name"))
+        .flatMap(parentId => database.find(_.id == parentId).toRight(s"No parent with id $parentId found in the database"))
+
+    def findParent2(name: String): Either[String, UserData] =
+      for {
+        user     <- database.find(_.name == name).toRight(s"No user $name in the database")
+        parentId <- parents.get(user.id).toRight(s"No parent found for user $name")
+        parent   <- database.find(_.id == parentId).toRight(s"No parent with id $parentId found in the database")
+      } yield parent
+  }
+
+  @main def main(): Unit = {
+    val name = read()
+    println(s"name: $name")
+
+    // exception
+    try {
+      val user = WithExceptions.findParent(name)
+      println(user)
+    } catch {
+      case ex: Throwable => println(ex.getMessage)
+    }
+
+    // Option
+    WithOption.findParent(name) match {
+      case Some(parent) => println(parent)
+      case None         => println("Error")
+    }
+
+    // Either
+    WithEither.findParent(name) match {
+      case Left(error) => println(s"Error: $error")
+      case Right(parent) => println(parent)
+    }
+
+    // Try
+    Try(WithExceptions.findParent(name)) match {
+      case Failure(exception) => println(s"Error: ${exception.getMessage}")
+      case Success(parent)    => println(parent)
+    }
+  }
+  
+  // try out with:
+  // John Doe (-> Michael Brown), Maciek (-> not in the database), Jane Smith (-> parent not in the database),
+  // Emily Johnson (-> invalid parent id)
+
+  private def read(): String = {
+    printf("\n> ")
+    readLine().trim
+  }
+```
+
+
+
+#### Cats Effect (13)
+
+
 
 ```scala
 package org.fpinscala.finished
 
-object Traits {
-  sealed trait Tree[+T]
-  case class Branch[T](left: Tree[T], value: T, right: Tree[T]) extends Tree[T]
-  case class Leaf[T](value: T) extends Tree[T]
-  case object Stump extends Tree[Nothing]
+import cats.effect.{IO, IOApp}
+import cats.syntax.all.*
+import org.fpinscala.UserData
 
-  /*
-      3
-     / \
-    2   5
-   /   / \
-  1   4   6
-  */
+import java.nio.file.{Files, Path}
+import scala.jdk.CollectionConverters.*
 
-  val intTree: Tree[Int] =
-    Branch(
-      Branch(Leaf(1), 2, Stump),
-      3,
-      Branch(Leaf(4), 5, Leaf(6))
-    )
+object CatsEffectVersion extends IOApp.Simple {
+  override def run: IO[Unit] =
+    for {
+      lines    <- read(UserData.FilePath)
+      users    =  lines.map(UserData.fromLine)
+      n        <- askForUpdate
+      updated  <- users.traverse(updateAge(_, n))
+      newLines =  updated.map(_.toLine)
+      _        <- write(UserData.FilePath, newLines)
+    } yield ()
 
-  // print out the tree
-  def print[T](tree: Tree[T], toString: T => String, level: Int = 0): Unit = {
-    val prefix = Seq.fill(level)('-').mkString
-    tree match { // show match exhaustive!
-      case Branch(left, value, right) =>
-        println(s"$prefix${toString(value)}")
-        print(left, toString, level + 1)
-        print(right, toString, level + 1)
-      case Leaf(value) =>
-        println(s"$prefix${toString(value)}")
-      case Stump =>
-        println(s"${prefix}X")
-    }
+  private def read(path: Path): IO[List[String]] =
+    IO { Files.readAllLines(path).asScala.toList }
+
+  private val askForUpdate: IO[Int] =
+    for {
+      _      <- IO.print("By how much should I update the age? ")
+      answer <- IO(scala.io.StdIn.readLine())
+    } yield answer.toInt
+
+  private def updateAge(user: UserData, n: Int): IO[UserData] = {
+    val newAge = user.age + n
+    for {
+      _       <- IO.println(s"The age of ${user.name} changes from ${user.age} to $newAge")
+      updated =  user.copy(age = newAge)
+    } yield updated
   }
 
-  def add[T](tree: Tree[T], t: T, compare: (T, T) => Int): Tree[T] = tree match {
-    case Branch(left, value, right) if compare(t, value) < 0 =>
-      val newLeft = add(left, t, compare)
-      Branch(newLeft, value, right)
-    case Branch(left, value, right) if compare(t, value) > 0 =>
-      val newRight = add(right, t, compare)
-      Branch(left, value, newRight)
-    case branch@Branch(_, _, _) =>
-      branch // no changes
-    case Leaf(value) if compare(t, value) < 0 =>
-      Branch(Leaf(t), value, Stump)
-    case Leaf(value) if compare(t, value) > 0 =>
-      Branch(Stump, value, Leaf(t))
-    case leaf@Leaf(_) =>
-      leaf // no changes
-    case _ =>
-      Leaf(t)
-  }
-
-  def add[T](tree: Tree[T], values: Seq[T], compare: (T, T) => Int): Tree[T] =
-    values.foldLeft[Tree[T]](tree) { (tree, t) => add(tree, t, compare) }
-
-  def create[T](values: Seq[T], compare: (T, T) => Int): Tree[T] = add(Stump, values, compare)
-
-/*  @main def main(): Unit = {
-    val compare = (a: Int, b: Int) => a - b
-    val toString = (n: Int) => n.toString
-    print(intTree, toString)
-    val newTree = create(Seq(10, 5, 15, 2, 8), compare)
-    print(newTree, toString)
-  }*/
+  private def write(path: Path, lines: List[String]): IO[Unit] =
+    IO { Files.writeString(path, lines.mkString("\n")) }
 }
 
 ```
 
-
-
-### 

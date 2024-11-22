@@ -1,40 +1,32 @@
 package org.fpinscala
 
+// 2
+
 object Collections {
-  import Color.*
+  // Let's create a class User and three users with names and emails
 
-  case class Cat(name: String, color: Color)
+  // Let's put them in a sequence and sort with sortWith
 
-  val felix = Cat("Felix", Black)
-  val garfield = Cat("Garfield", Ginger)
-  val fluff = Cat("Fluff", White)
-  
-  // Scala collections: Seq, Set, Map
-  val catsSeq = ???
-  val sortedCats1 = ???
+  // This won't work because users don't have an implicit ordering
+  //val sortedUsers2 = usersSeq.sorted
 
-  // This won't work because cats don't have an implicit ordering
-  //val sortedCats2 = catsSeq.sorted
-
-  val sortedCats3 = ???
+  // But this will
+  //val sortedUsers3 = usersSeq.sortBy(_.name)
 
   // maps
-  val catsMap = ???
+
+  // a map can be thought of as a set of tuples
 
   // tuples
-  val catsTuples = ???
 
   // filter - we already discussed it
 
   // find
-  val blackCat = ???
-  val felixTheCat = ???
 
   // foreach
 
-
   // map
-  // Let's create another class
-  case class Car(color: Color)
-  val cars = ???
+  // Let's create a conversation class
+
+  // And let's create conversations of Joe and every other user
 }

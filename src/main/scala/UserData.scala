@@ -4,9 +4,8 @@ import java.nio.file.{Path, Paths}
 import scala.jdk.CollectionConverters.*
 
 type UserId = Int
-type Email = String
 
-case class UserData(id: UserId, name: String, email: Email, age: Int) {
+case class UserData(id: UserId, name: String, email: String, age: Int){
   def toLine: String = s"$id,$name,$email,$age"
 }
 

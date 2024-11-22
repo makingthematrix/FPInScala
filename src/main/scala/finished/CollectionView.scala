@@ -1,17 +1,16 @@
-package org.fpinscala.finished
+package org.fpinscala
+package finished
 
-object ViewAndLazyList {
+object CollectionView {
   private val numbers: Seq[Int] = 1 to 100
 
   // Without using view
-  val firstEvenSquareGreaterThan100_NoView: Int = {
+  val firstEvenSquareGreaterThan100_NoView: Int = 
     numbers
       .map(n => n * n)
       .filter(n => n > 100 && n % 2 == 0)
       .head
-  }
-
-
+  
   // Using view
   val firstEvenSquareGreaterThan100_View: Int =
     numbers

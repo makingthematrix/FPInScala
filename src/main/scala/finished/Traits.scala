@@ -1,5 +1,7 @@
 package org.fpinscala.finished
 
+// 11.2
+
 object Traits {
   sealed trait Tree[+T]
   case class Branch[T](left: Tree[T], value: T, right: Tree[T]) extends Tree[T]

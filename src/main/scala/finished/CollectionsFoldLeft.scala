@@ -1,6 +1,6 @@
 package org.fpinscala.finished
 
-// 2.2
+// 4
 
 object CollectionsFoldLeft {
   // fizz buzz! union types!

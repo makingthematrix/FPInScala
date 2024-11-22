@@ -1,18 +1,11 @@
 package org.fpinscala
 
+// 6
+
 object PartialFunctions {
-  // traits! Animal
+  // Using the collect method, create a set of names of parents of our users
 
-  // case classes! Cat and Dog
+  // Using the collect method, create a sequence of animals containing only black cats
 
-  // We create three instances of cats
-
-  // and two instances of dogs
-
-  // We put all cats and dogs in a sequence of type Seq[Animal]
-  val animals = ???
-
-  // Using the collect method, we create a new sequence containing only black cats
-  val blackCats = ???
-
+  // We will come back to `collect` in the part about early returns
 }

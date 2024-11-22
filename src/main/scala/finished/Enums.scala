@@ -1,6 +1,6 @@
 package org.fpinscala.finished
 
-// 5
+// 11.1
 
 object Enums {
   enum Tree[+T] { // The + in +T is here because of covariance. 
@@ -25,8 +25,7 @@ object Enums {
       3,
       Branch(Leaf(4), 5, Leaf(6))
     )
-  
-  //@tailrec
+
   def print[T](tree: Tree[T], toString: T => String, level: Int = 0): Unit = {
     val prefix = Seq.fill(level)('-').mkString
     tree match { // show match exhaustive!
@@ -65,7 +64,7 @@ object Enums {
 
   def create[T](values: Seq[T], compare: (T, T) => Int): Tree[T] = add(Stump, values, compare)
 
-/*  @main def main(): Unit = {
+  /*@main*/ def main(): Unit = {
     //print(intTree, _.toString)
     val compare = (a: Int, b: Int) => a - b
     val newTree: Tree[Int] =
@@ -73,6 +72,6 @@ object Enums {
         .foldLeft[Tree[Int]](Stump) { (tree, t) => add(tree, t, compare) }
    // val newTree = create(Seq(10, 5, 15, 2, 8), compare)
     print(newTree, (n: Int) => n.toString)
-  }*/
+  }
 
 }

@@ -1,35 +1,26 @@
 package org.fpinscala.finished
 
-import org.fpinscala.{CarBrand, Color}
-import Color.*
-import CarBrand.*
-// 2.1
+// 3
 
 object CollectionsFlatMap {
-  case class Cat(name: String, color: Color)
+  // Let's take that map for Joe and use it for every user
+  case class User(name: String, email: String)
+  case class Conversation(title: String, participants: Seq[User])
 
-  val felix = Cat("Felix", Black)
-  val shadow = Cat("Shadow", Black)
-  val snowball = Cat("Snowball", White)
-  val garfield = Cat("Garfield", Ginger)
+  val joe: User = User("Joe", "joe@gmail.com")
+  val felix: User = User("Felix", "felix@proton.me")
+  val garfield: User = User("Garfield", "garfield@catmail.org")
+  val users: Seq[User] = Seq(joe, garfield, felix)
 
-  // We put them all in a list
-  val cats = Seq(felix, shadow, snowball, garfield)
-
-  case class Car(brand: CarBrand, color: Color)
-
-  // We define a function that takes a cat and produces a list of cars
-  def catToCars(cat: Cat): Seq[Car] =
-    Seq(
-      Car(Volkswagen, cat.color),
-      Car(Mercedes, cat.color),
-      Car(Toyota, cat.color)
-    )
-
-  val cars = cats.flatMap(catToCars)
-
-/*  @main def main(): Unit = {
-    println(s"Number of cars: ${cars.size}")
-    cars.foreach(car => println(s"${car.color} ${car.brand}"))
+  val convos: Seq[Conversation] =
+    users.flatMap { user =>
+      users
+        .filterNot(_.name == user.name)
+        .map(user2 => Conversation(s"${user.name} and ${user2.name}", Seq(user, user2)))
+    }
+/*
+  @main def main(): Unit = {
+    println(s"Number of convos: ${convos.size}")
+    convos.foreach(c => println(c.title))
   }*/
 }

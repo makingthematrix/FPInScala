@@ -1,34 +1,43 @@
 package org.fpinscala.finished
 
-import org.fpinscala.Color
-
 // 1
 
 object FunctionAsData {
-  class Cat(val color: Color)
+  class User(val name: String, val email: String) {
+    override def toString: String = s"$name:$email"
+  }
 
-  // We create our bag (a set) of cats. Each cat has a different color.
-  // Note the highlighting and suggestions
-  val bagOfCats = Set(Cat(Color.White), Cat(Color.Ginger), Cat(Color.Black))
+  // Let's create a sequence of three users
+  val users: Seq[User] = Seq(
+    User("Joe", "joe@gmail.com"),
+    User("Felix", "felix@proton.me"),
+    User("Garfield", "garfield@catmail.org")
+  )
 
-  // A function which checks if a cat is white go ginger, the `def` syntax
-  def isCatWhiteOrGinger(cat: Cat): Boolean = cat.color == Color.White || cat.color == Color.Ginger
+  // A function which checks if the user's email is valid
+  def isEmailValid(user: User): Boolean = user.email.contains('@')
 
-  // Pass the appropriate function into `filter` to create a bag of white cats.
-  val bagOfWhiteOrGingerCats = bagOfCats.filter(isCatWhiteOrGinger)
+  // Pass the appropriate function into `filter` to create a sequence of users with valid emails.
+  private val usersWithValidEmails = users.filter(isEmailValid)
 
-  // The whole "Cat => Boolean" is the type of the function
-
-  val isCatWhiteOrGingerFun: Cat => Boolean =
-    cat => cat.color == Color.White || cat.color == Color.Ginger
+  // The whole "User => Boolean" is the type of the function
+  private val isEmailValidFun: User => Boolean =
+    user => user.email.contains('@')
 
   // We can use it instead of the method version in `filter`
-  val bagOfWhiteOrGingerCatsFun = bagOfCats.filter(isCatWhiteOrGingerFun)
+  val usersWithValidEmailsFun: Seq[User] = users.filter(isEmailValidFun)
 
   // or we can use an anonymous function - also called lambdas
-  val bagOfWhiteOrGingerCatsAnon = bagOfCats.filter(cat => cat.color == Color.White || cat.color == Color.Ginger)
+  val usersWithValidEmailsAnon: Seq[User] = users.filter(user => user.email.contains('@'))
 
   // Lambdas, just as all functions, can take a value from its scope
-  private val color = Color.White
-  val numberOfColorCats = bagOfCats.filter(_.color == color)
+  private val alwaysValidName = "Maciek"
+  val usersWithValidEmailsOrMaciek: Seq[User] =
+    users.filter(
+      user => user.name == alwaysValidName || isEmailValid(user)
+    )
+
+/*  @main def main(): Unit = {
+    println(usersWithValidEmails)
+  }*/
 }

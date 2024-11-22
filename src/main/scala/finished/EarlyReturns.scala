@@ -24,10 +24,10 @@ object EarlyReturns {
   
   private val userIds: Seq[UserId] = 1 to 11
 
-  @main def main(): Unit = {
+/*  @main def main(): Unit = {
     val user = Imperative.findFirstValidUser(userIds)
     println(user)
-  }
+  }*/
 
   /**
    * Imperative approach that uses unidiomatic `return`.

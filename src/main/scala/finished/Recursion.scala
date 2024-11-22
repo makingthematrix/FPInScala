@@ -1,9 +1,10 @@
 package org.fpinscala.finished
 
 import scala.annotation.tailrec
+import scala.util.control.TailCalls.*
 
 object Recursion {
-  def factorial(n: BigInt): BigInt =
+  def factorial(n: Int): BigInt =
     if (n <= 0) 1
     else n * factorial(n - 1)
 
@@ -29,24 +30,48 @@ object Recursion {
     go(n, 1)
   }
 
+  def trampolineFactorial(n: Int): BigInt = {
+    def go(i: Int): TailRec[BigInt] =
+      if (i <= 0) done(1)
+      else tailcall(go(i - 1)).map(_ * i)
+
+    go(n).result
+  }
+
+  // 1 -> 1, 2 -> 1, 3 -> 2, 4 -> 3, 5 -> 5, 6 -> 8
+
   def fibonacci(n: Int): BigInt =
-    if (n == 0) 0
-    else if (n == 1) 1
+    if (n == 1) 1
+    else if (n == 2) 1
     else fibonacci(n - 2) + fibonacci(n - 1)
 
   def tailFibonacci(n: Int): BigInt = {
     @tailrec
     def go(currentN: Int, currentSum: BigInt, previousSum: BigInt): BigInt = {
-      if (currentN < 0) -1
-      else if (currentN == 0) previousSum
+      if (currentN < 1) 1
+      else if (currentN == 1) previousSum
       else go(currentN - 1, currentSum + previousSum, currentSum)
     }
 
     go(n, 1, 1)
   }
 
+  def trampolineFibonacci(n: Int): BigInt = {
+    def go(i: Int): TailRec[BigInt] = i match {
+      case 1 => done(1)
+      case 2 => done(1)
+      case _ =>
+        for {
+          a <- tailcall(go(i - 1))
+          b <- tailcall(go(i - 2))
+        } yield a + b
+    }
+
+    go(n).result
+  }
+
   private val fib: LazyList[BigInt] =
-    BigInt(0) #::
+    BigInt(1) #::
       BigInt(1) #::
       fib.zip(fib.tail).map { case (a, b) => a + b }
 
@@ -54,8 +79,12 @@ object Recursion {
 
 /*  @main def main(): Unit = {
     //val res = factorial(10000)
-    //val res = fibonacci(40)
-    val res = fibonacciLazyList(80)
+    //val res = tailFactorial(10000)
+    //val res = trampolineFactorial(10000)
+    //val res = fibonacci(10)
+    //val res = tailFibonacci(6)
+    val res = trampolineFibonacci(6)
+    //val res = fibonacciLazyList(6)
     println(res)
   }*/
 }

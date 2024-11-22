@@ -3,45 +3,50 @@ package org.fpinscala.finished
 // 2
 
 object Collections {
-  import Color.*
+  case class User(name: String, email: String)
 
-  case class Cat(name: String, color: Color)
-
-  val felix = Cat("Felix", Black)
-  val garfield = Cat("Garfield", Ginger)
-  val fluff = Cat("Fluff", White)
+  val joe = User("Joe", "joe@gmail.com")
+  val felix = User("Felix", "felix@proton.me")
+  val garfield = User("Garfield", "garfield@catmail.org")
   
   // Scala collections: Seq, Set, Map
-  val catsSeq = Seq(fluff, garfield, felix)
-  val sortedCats1 = catsSeq.sortWith( (c1, c2) => ??? )
+  val usersSeq = Seq(joe, garfield, felix)
+  val sortedUsers = usersSeq.sortWith( (u1, u2) => u1.name < u2.name )
 
-  // This won't work because cats don't have an implicit ordering
-  //val sortedCats2 = catsSeq.sorted
+  // This won't work because users don't have an implicit ordering
+  //val sortedUsers2 = usersSeq.sorted
 
   // But this will
-  val sortedCats3 = catsSeq.sortBy(_.color.toString)
+  val sortedUsers3 = usersSeq.sortBy(_.name)
 
   // maps
-  val catsMap = Map(
-    "Felix"    -> felix,
+  val usersMap = Map(
+    "Felix" -> felix,
     "Garfield" -> garfield,
-    "Fluff"    -> fluff
+    "Joe" -> joe
   )
+  
+  // a map can be thought of as a set of tuples 
+  val usersMap2 = usersSeq.map(u => u.name -> u).toMap
 
   // tuples
-  val catsTuples: Seq[(String, Cat)] = catsMap.toSeq
+  val userTuples: Seq[(String, User)] = usersMap.toSeq
 
   // filter - we already discussed it
 
   // find
-  val blackCat: Option[Cat] = catsSeq.find { cat => cat.color == Black }
-  val felixTheCat: Option[Cat] = catsSeq.find { cat => cat.name == "Felix" } // also: _.name == "Felix"
+  val protonEmail: Option[User] = usersSeq.find { user => user.email.endsWith("@proton.me") }
+  val felixTheUser: Option[User] = usersSeq.find { joe => joe.name == "Felix" } // also: _.name == "Felix"
 
   // foreach
-  catsSeq.foreach(cat => println(s"This is ${cat.name}"))
+  usersSeq.foreach(user => println(s"This is ${user.name}"))
 
   // map
-  // Let's create another class
-  case class Car(color: Color)
-  val cars = catsSeq.map(cat => Car(cat.color)).toSeq
+  // Let's create a conversation class
+  case class Conversation(title: String, participants: Seq[User])
+  // And let's create conversations of Joe and every other user
+  val joesConvos: Seq[Conversation] =
+    usersSeq
+      .filterNot(_.name == "Joe")
+      .map(user => Conversation(s"Joe and ${user.name}", Seq(joe, user)))
 }

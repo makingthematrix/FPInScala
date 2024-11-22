@@ -1,39 +1,29 @@
 package org.fpinscala.finished
 
-// 3
+
+// 6
 
 object PartialFunctions {
-  enum Color {
-    case Black, White, Ginger
-  }
-  
-  import Color.*
+  // Using the collect method, create a set of names of parents of our users
 
-  // traits!
-  trait Animal {
-    def name: String
-    def color: Color
-  }
-  
-  case class Cat(name: String, color: Color) extends Animal
-  case class Dog(name: String, color: Color) extends Animal
+  import org.fpinscala.UserData.parents
+  import org.fpinscala.UserData.database
 
-  // We create three instances of cats
-  val felix = Cat("Felix", Black)
-  val garfield = Cat("Garfield", Ginger)
-  val shadow = Cat("Shadow", Black)
+  val parentNames: Seq[String] =
+    database
+      .map(u => parents.get(u.id))
+      .collect {
+        case Some(id) if database.exists(_.id == id) => database(id).name
+      }
 
-  // and two instances of dogs
-  val fido = Dog("Fido", Black)
-  val snowy = Dog("Snowy", White)
+  import org.fpinscala.Animal.animals
+  import org.fpinscala.Cat
+  import org.fpinscala.Color.Black
 
-  // We put all cats and dogs in a sequence of type Seq[Animal]
-  val animals: Seq[Animal] = Seq(felix, garfield, shadow, fido, snowy)
-
-  // Using the collect method, we create a new sequence containing only black cats
+  // Using the collect method, create a sequence of animals containing only black cats
   val blackCats: Seq[Cat] = animals.collect {
     case cat: Cat if cat.color == Black => cat
   }
-  
+
   // We will come back to `collect` in the part about early returns
 }

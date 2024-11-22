@@ -5,7 +5,7 @@ ThisBuild / scalaVersion := "3.3.3"
 lazy val root = (project in file("."))
   .settings(
     name := "FP_in_Scala",
-    idePackagePrefix := Some("org.makingthematrix.fpinscala")
+    idePackagePrefix := Some("org.fpinscala")
   )
 
 libraryDependencies += "org.typelevel" %% "cats-effect" % "3.5.2"

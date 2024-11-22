@@ -1,28 +1,24 @@
 package org.fpinscala
 
+// 1
+
 object FunctionAsData {
-  class Cat(val color: Color)
+  class User(val name: String, val email: String)
 
-  // We create our bag (a set) of cats. Each cat has a different color.
-  // Note the highlighting and suggestions
-  val bagOfCats = ???
+  // Let's create a sequence of three users 
 
-  // A function which checks if a cat is white go ginger, the `def` syntax
-  def isCatWhiteOrGinger(cat: Cat): Boolean = ???
+  // A function which checks if the user's email is valid
 
-  // Pass the appropriate function into `filter` to create a bag of white cats.
-  val bagOfWhiteOrGingerCats = ???
+  // Pass the appropriate function into `filter` to create a sequence of users with valid emails.
 
-  // The whole "Cat => Boolean" is the type of the function
-  val isCatWhiteOrGingerFun: Cat => Boolean = ???
+  // The whole "User => Boolean" is the type of the function
 
   // We can use it instead of the method version in `filter`
-  val bagOfWhiteOrGingerCatsFun = ???
 
   // or we can use an anonymous function - also called lambdas
-  val bagOfWhiteOrGingerCatsAnon = ???
 
   // Lambdas, just as all functions, can take a value from its scope
-  private val color = Color.White
-  val numberOfColorCats = ???
+  private val alwaysValidName = "Maciek"
+
+  // @main def main(): Unit =
 }

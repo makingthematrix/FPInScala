@@ -7,14 +7,14 @@ import scala.jdk.CollectionConverters.*
 // 13.1
 
 object SideEffectsVersion {
-/*  @main def main(): Unit = {
+  @main def main(): Unit = {
     val lines    = read(UserData.FilePath)
     val users    = lines.map(UserData.fromLine)
     val n        = askForUpdate()
     val updated  = users.map(updateAge(_, n))
     val newLines = updated.map(_.toLine)
     write(UserData.FilePath, newLines)
-  }*/
+  }
 
   private def read(path: Path): List[String] =
     Files.readAllLines(path).asScala.toList
